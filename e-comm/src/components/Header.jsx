@@ -1,11 +1,12 @@
 import { NavLink } from "react-router-dom";
 import { useCart } from "../contexts/CartProvider";
 import { FaCartPlus } from "react-icons/fa";
-
-// import "../components/header.css";
+import { useCurrency } from "../contexts/CurrencyProvider";
 
 function Header() {
   const { cart } = useCart();
+  const { currency, setCurrency } = useCurrency();
+
   return (
     <header>
       <h1>
@@ -14,12 +15,25 @@ function Header() {
       <ul>
         <li>
           <NavLink to="/cart">
-          <FaCartPlus className="cart-icon" /> Cart</NavLink>
-           <div className='cart-circle'>{cart.length}</div>
+            <FaCartPlus className="cart-icon" /> Cart
+          </NavLink>
+          <div className="cart-circle">{cart.length}</div>
         </li>
+
         <li>
           <NavLink to="/wishlist">Wishlist</NavLink>
         </li>
+
+        <li>
+          <select
+            value={currency} onChange={(e) => setCurrency(e.target.value)}
+          >
+           <option value="INR">₹ INR</option>
+           <option value="USD">$ USD</option>
+           <option value="EUR">€ EUR</option>
+          </select>
+        </li>
+
         <li>
           <NavLink to="/login">Login</NavLink>
         </li>

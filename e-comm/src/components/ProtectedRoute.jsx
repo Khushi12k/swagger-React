@@ -1,24 +1,14 @@
-import { useEffect, useState } from "react";
+
 import instance from "../config/axiosConfig";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthProvider";
 
 function ProtectedRoute({ children }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate(); 
+   const { isLoggedIn } = useAuth();
 
-  useEffect(() => {
-    isUserLoggedIn();
-  }, []);
+  console.log(isLoggedIn);
 
-  async function isUserLoggedIn() {
-    const response = await instance.get("/auth/authCheck", {
-      withCredentials: true,
-    });
-    console.log(response);
-  }
-
-  //   if (!isUserLoggedIn) navigate("/login");
-  //   else return { children };
+  if (!isLoggedIn) <Navigate to="/login" />;
+  else return children;
 }
-
 export default ProtectedRoute;

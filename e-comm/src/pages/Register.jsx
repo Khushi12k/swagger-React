@@ -23,6 +23,7 @@ function Register() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    e.preventDefault();
     try {
       setIsSubmitting(true);
       const response = await instance.post("/auth/register", data);
@@ -30,7 +31,7 @@ function Register() {
         response.status === 201 &&
         response.message === "Data added successfully"
       ) {
-        navigate("/login?registered=1");
+        navigate("/login");
       }
     } catch (error) {
       console.log(error);

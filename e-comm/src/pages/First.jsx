@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import instance from "../config/axiosConfig";
-// import "./first.css";
-import { PiCurrencyInr } from "react-icons/pi";
 import { Link } from "react-router-dom";
-import '../index.css';
+import { useCurrency } from "../contexts/CurrencyProvider";
+import "../index.css";
 
 function First() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const { convert, currency } = useCurrency(); // ⭐ added
 
   useEffect(() => {
     getData();
@@ -16,8 +17,6 @@ function First() {
   async function getData() {
     setLoading(true);
     const response = await instance.get("/product/get");
-    // const result = await response.json();
-    console.log(response.data);
     setProducts(response.data);
     setLoading(false);
   }
@@ -33,23 +32,22 @@ function First() {
     <>
       <section className="products">
         {products.length > 0 &&
-          products.map((obj) => {
-            return (
-              <div className="product" key={obj._id}>
+          products.map((obj) => (
+            <div className="product" key={obj._id}>
+              <Link to={`/product/${obj._id}`}>
+                <img src={obj.image} alt={obj.name} />
+              </Link>
+              <h3>
                 <Link to={`/product/${obj._id}`}>
-                  <img src={obj.image} alt={obj.name} />
+                  {trimContent(obj.name, 8)}
                 </Link>
-                <h3>
-                  <Link to={`/product/${obj._id}`}>
-                    {trimContent(obj.name, 8)}
-                  </Link>
-                </h3>
-                <p className="price">
-                  <PiCurrencyInr /> {obj.price}
-                </p>
-              </div>
-            );
-          })}
+              </h3>
+
+              <p className="price">
+                {currency} {convert(obj.price).toFixed(2)}
+              </p>
+            </div>
+          ))}
       </section>
     </>
   );

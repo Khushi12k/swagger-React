@@ -10,6 +10,8 @@ import Register from "./Register";
 import Home from "./Home";
 import ProtectedRoute from "../components/ProtectedRoute";
 import CartProvider from "../contexts/CartProvider";
+import AuthProvider from "../contexts/AuthProvider";
+import CurrencyProvider from "../contexts/CurrencyProvider";
 
 
 const router = createBrowserRouter([
@@ -39,9 +41,13 @@ const router = createBrowserRouter([
 
 function Router() {
   return (
+        <AuthProvider>
+          <CurrencyProvider>
     <CartProvider>
-      <RouterProvider router={router} />
+        <RouterProvider router={router} />
     </CartProvider>
+    </CurrencyProvider>
+    </AuthProvider>
   );
 }
 
