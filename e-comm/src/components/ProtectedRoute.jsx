@@ -1,14 +1,19 @@
-
-import instance from "../config/axiosConfig";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthProvider";
 
 function ProtectedRoute({ children }) {
-   const { isLoggedIn } = useAuth();
+  const { state } = useAuth();     
+  const { isLoggedIn } = state;    
 
-  console.log(isLoggedIn);
+  console.log("Auth status:", isLoggedIn);
 
-  if (!isLoggedIn) <Navigate to="/login" />;
-  else return children;
+
+  if (isLoggedIn === null) return null;
+
+
+  if (!isLoggedIn) return <Navigate to="/login" replace />;
+
+  return children;
 }
+
 export default ProtectedRoute;

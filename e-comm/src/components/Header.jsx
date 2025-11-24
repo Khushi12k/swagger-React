@@ -2,18 +2,22 @@ import { NavLink } from "react-router-dom";
 import { useCart } from "../contexts/CartProvider";
 import { FaCartPlus } from "react-icons/fa";
 import { useCurrency } from "../contexts/CurrencyProvider";
+import { useAuth } from "../contexts/AuthProvider";
 
 function Header() {
   const { cart } = useCart();
   const { currency, setCurrency } = useCurrency();
+  const { user, logout } = useAuth();
 
   return (
     <header>
       <h1>
         <NavLink to="/">Ecommerce</NavLink>
       </h1>
+
       <ul>
-        <li>
+      
+        <li className="cart-nav">
           <NavLink to="/cart">
             <FaCartPlus className="cart-icon" /> Cart
           </NavLink>
@@ -25,17 +29,21 @@ function Header() {
         </li>
 
         <li>
-          <select
-            value={currency} onChange={(e) => setCurrency(e.target.value)}
-          >
-           <option value="INR">₹ INR</option>
-           <option value="USD">$ USD</option>
-           <option value="EUR">€ EUR</option>
+          <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
+            <option value="INR">₹ INR</option>
+            <option value="USD">$ USD</option>
+            <option value="EUR">€ EUR</option>
           </select>
         </li>
 
         <li>
-          <NavLink to="/login">Login</NavLink>
+          {user ? (
+            <button onClick={logout} className="logout-btn">
+              Logout
+            </button>
+          ) : (
+            <NavLink to="/login">Login</NavLink>
+          )}
         </li>
       </ul>
     </header>
@@ -43,3 +51,4 @@ function Header() {
 }
 
 export default Header;
+

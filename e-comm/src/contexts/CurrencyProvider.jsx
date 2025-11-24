@@ -1,42 +1,50 @@
-import axios from 'axios'
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import axios from "axios";
+import { createContext, useContext, useEffect, useState } from "react";
 
-const currencyContext = createContext()
+const CurrencyContext = createContext();
 
 const CurrencyProvider = ({ children }) => {
-    const [currency, setCurrency] = useState("INR")
-    const [rates, setRates] = useState({ INR: 1, USD: 1, EUR: 1 })
+    const [currency, setCurrency] = useState(() => {
+        return localStorage.getItem("currency") || "INR"; 
+    });
+
+    const [rates, setRates] = useState({ INR: 1, USD: 1, EUR: 1 });
 
     useEffect(() => {
-        async function fetchApi() {
-            const res = await axios.get(
-                "https://v6.exchangerate-api.com/v6/99e71576ea6e1d6f557f9c63/latest/INR"
-            )
-            console.log(res.data)
+        async function fetchRates() {
+            let response = await axios.get(
+                "https://v6.exchangerate-api.com/v6/e928549c3a8e6ff1d81c0d0b/latest/INR"
+            );
+
             setRates({
                 INR: 1,
-                USD: res.data.conversion_rates.USD,
-                EUR: res.data.conversion_rates.EUR,
-            })
+                USD: response.data.conversion_rates.USD,
+                EUR: response.data.conversion_rates.EUR,
+            });
         }
+        fetchRates();
+    }, []);
 
-        fetchApi() 
-    }, [])
-
+    
+    useEffect(() => {
+        if (currency) {
+            localStorage.setItem("currency", currency);
+        }
+    }, [currency]);
 
     function convert(priceInINR) {
-        return priceInINR * rates[currency]
+        return priceInINR * (rates[currency] || 1);
     }
 
     return (
-        <currencyContext.Provider value={{ currency, setCurrency,convert }}>
+        <CurrencyContext.Provider value={{ currency, setCurrency, convert }}>
             {children}
-        </currencyContext.Provider>
-    )
-}
+        </CurrencyContext.Provider>
+    );
+};
+
+export default CurrencyProvider;
 
 export function useCurrency() {
-    return useContext(currencyContext)
+    return useContext(CurrencyContext);
 }
-
-export default CurrencyProvider

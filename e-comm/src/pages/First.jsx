@@ -8,7 +8,7 @@ function First() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { convert, currency } = useCurrency(); // ⭐ added
+  const { convert, currency } = useCurrency(); 
 
   useEffect(() => {
     getData();
@@ -25,6 +25,8 @@ function First() {
     const arr = input.split(" ");
     return arr.length > len ? arr.slice(0, len).join(" ") + "..." : input;
   }
+
+  
 
   if (loading) return <div className="loader">Loading...</div>;
 

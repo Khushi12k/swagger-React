@@ -1,3 +1,4 @@
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import OutletComponent from "./OutletComponent";
 import Cart from "../pages/Cart";
@@ -43,11 +44,11 @@ function Router() {
   return (
         <AuthProvider>
           <CurrencyProvider>
-    <CartProvider>
-        <RouterProvider router={router} />
+             <CartProvider>
+         <RouterProvider router={router} />
     </CartProvider>
-    </CurrencyProvider>
-    </AuthProvider>
+     </CurrencyProvider>
+      </AuthProvider>
   );
 }
 

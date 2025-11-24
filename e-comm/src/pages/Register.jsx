@@ -1,8 +1,7 @@
 import { useState } from "react";
-import instance from "../config/axiosConfig";
 import { Link, useNavigate } from "react-router-dom";
-
-// import "./register.css";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../pages/firebase.js"  
 
 function Register() {
   const [data, setData] = useState({
@@ -12,8 +11,8 @@ function Register() {
     email: "",
     password: "",
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isError, setIsError] = useState(null);
   const navigate = useNavigate();
 
   function handleChange(e) {
@@ -23,103 +22,55 @@ function Register() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    e.preventDefault();
+    setIsSubmitting(true);
+
     try {
-      setIsSubmitting(true);
-      const response = await instance.post("/auth/register", data);
-      if (
-        response.status === 201 &&
-        response.message === "Data added successfully"
-      ) {
-        navigate("/login");
-      }
+     
+      await createUserWithEmailAndPassword(auth, data.email, data.password);
+
+      alert("Account created successfully!");
+      navigate("/login"); 
     } catch (error) {
-      console.log(error);
-      setIsError(error.message);
-      setIsSubmitting(false);
+      console.log("Registration Error:", error.message);
+      alert(error.message);
     } finally {
       setIsSubmitting(false);
     }
   }
 
   return (
-    <div className="form-container">
-      {isError && <p>{isError}</p>}
-      <h2>Register into Ecommerce</h2>
-      <div className="form-wrapper">
-        <form action="" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="name">Name</label>
-            <input
-              type="text"
-              placeholder="Enter Name"
-              name="name"
-              id="name"
-              value={data.name}
-              onChange={handleChange}
-            />
-          </div>
+    <div className="register-page">
+      <div className="register-card">
 
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              placeholder="Enter Username"
-              name="username"
-              id="username"
-              value={data.username}
-              onChange={handleChange}
-            />
-          </div>
+        <div className="register-left">
+          <h2>Get Started<br />with Us</h2>
+          <p>Complete these easy steps to register your account.</p>
+        </div>
 
-          <div className="form-group">
-            <label htmlFor="phone">Phone</label>
-            <input
-              type="text"
-              placeholder="Enter Phone"
-              name="phone"
-              id="phone"
-              value={data.phone}
-              onChange={handleChange}
-            />
-          </div>
+        <div className="register-right">
+          <h2>Sign Up Account</h2>
+          <p>Enter your personal data to create your account.</p>
 
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              placeholder="Enter Email"
-              name="email"
-              id="email"
-              value={data.email}
-              onChange={handleChange}
-            />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <input type="text" name="name" placeholder="First Name" value={data.name} onChange={handleChange} required />
+            <input type="text" name="username" placeholder="Username" value={data.username} onChange={handleChange} required />
+            <input type="email" name="email" placeholder="Email" value={data.email} onChange={handleChange} required />
+            <input type="tel" name="phone" placeholder="Phone" value={data.phone} onChange={handleChange} required />
+            <input type="password" name="password" placeholder="Password" value={data.password} onChange={handleChange} required />
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              placeholder="Enter password"
-              name="password"
-              id="password"
-              value={data.password}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <button type="submit" className={isSubmitting ? "inProcess" : ""}>
-              {isSubmitting ? "Registering..." : "Register"}
+            <button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Creating Account..." : "Create Account"}
             </button>
-          </div>
-        </form>
-        <p>
-          Already Registered? <Link to="/login">Login Here</Link>
-        </p>
+
+            <p className="bottom-text">
+              Already have an account? <Link to="/login">Login Here</Link>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );
 }
 
 export default Register;
+
